@@ -294,7 +294,7 @@ function getArrayDiv(context: Context, key: string, value: unknown[]) {
   }
 }
 
-function getMapDiv(context: Context, key: string, value: ReadonlyMap<string, unknown>) {
+function getMapDiv(context: Context, key: string, value: ReadonlyMap<unknown, unknown>) {
   const entries = Array.from(value.entries());
   if (entries.length === 0) {
     return getTextDiv(key, "{}");
@@ -302,11 +302,25 @@ function getMapDiv(context: Context, key: string, value: ReadonlyMap<string, unk
     return (
       <div className="array" key={key} data-name={key}>
         <div className="key">{key}:{"{"}</div>
-        <div className="value">{entries.map((v, i) => getTreeNode(context, v[1], v[0], i))}</div>
+        <div className="value">
+          {entries.map((v, i) => getTreeNode(context, v[1], getMapKeyLabel(context, v[0]), i))}
+        </div>
         <div className="suffix">{"}"}</div>
       </div>
     );
   }
+}
+
+/**
+ * Map keys aren't always strings - SourceFile.nodeMacroMap, for instance, is keyed
+ * by Node - so they have to be turned into something renderable before they're used
+ * as a label.
+ */
+function getMapKeyLabel(context: Context, key: unknown): string {
+  if (typeof key === "string") {
+    return key;
+  }
+  return getLabelName(context, key) ?? String(key);
 }
 
 function getObjectDiv(context: Context, key: string, value: unknown) {
@@ -379,9 +393,11 @@ function getNodeDiv(context: Context, key: string, value: Node) {
   );
 }
 
-function getTextDiv(key: string | undefined, value: string | JSX.Element) {
+// reactKey exists because labels aren't necessarily unique among siblings: a map
+// keyed by Node renders several entries as the same syntax kind name.
+function getTextDiv(key: string | undefined, value: string | JSX.Element, reactKey?: string | number) {
   return (
-    <div className="text" key={key} data-name={key}>
+    <div className="text" key={reactKey ?? key} data-name={key}>
       {key == null ? undefined : <div className="key">{key}:</div>}
       <div className="value">{value}</div>
     </div>
@@ -393,13 +409,13 @@ function getTreeNode(context: Context, value: any, key?: string, index?: number)
   key = getKey();
 
   if (typeof value === "string") {
-    return getTextDiv(key, `"${value}"`);
+    return getTextDiv(key, `"${value}"`, index);
   }
   if (typeof value === "number") {
-    return getTextDiv(key, value.toString());
+    return getTextDiv(key, value.toString(), index);
   }
   if (typeof value === "boolean") {
-    return getTextDiv(key, value.toString());
+    return getTextDiv(key, value.toString(), index);
   }
   return (
     <LazyTreeView
@@ -414,7 +430,7 @@ function getTreeNode(context: Context, value: any, key?: string, index?: number)
     if (key == null) {
       return labelName;
     } else if (labelName != null) {
-      return `${key}: ${getLabelName(context, value)}`;
+      return `${key}: ${labelName}`;
     }
     return key;
   }
@@ -514,7 +530,7 @@ function getKeyPermission(context: Context, obj: any, key: string): true | false
   }
 }
 
-function isMap(value: any): value is ReadonlyMap<string, unknown> {
+function isMap(value: any): value is ReadonlyMap<unknown, unknown> {
   return typeof value.keys === "function" &&
     typeof value.values === "function";
 }
