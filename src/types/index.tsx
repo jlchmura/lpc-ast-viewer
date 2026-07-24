@@ -3,6 +3,7 @@ import {
   CompilerPackageNames,
   Node,
   Program,
+  LanguageVariant,
   ScriptKind,
   ScriptTarget,
   SourceFile,
@@ -35,6 +36,7 @@ export interface OptionsState {
   treeMode: TreeMode;
   scriptTarget: ScriptTarget;
   scriptKind: ScriptKind;
+  driverType: LanguageVariant;
   bindingEnabled: boolean;
   showFactoryCode: boolean;
   showInternals: boolean;

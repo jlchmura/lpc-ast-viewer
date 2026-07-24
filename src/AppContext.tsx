@@ -4,6 +4,7 @@ import {
   compilerVersionCollection,
   getCompilerApi,
   hasLoadedCompilerApi,
+  LanguageVariant,
   ScriptKind,
   ScriptTarget,
 } from "./compiler/index.js";
@@ -14,6 +15,7 @@ import { sleep, StateSaver, UrlSaver } from "./utils/index.js";
 
 const initialScriptTarget: ScriptTarget = 1 /* ScriptTarget.LPC (Latest) */;
 const initialScriptKind: ScriptKind = 1 /* ScriptKind.LPC */;
+const initialDriverType: LanguageVariant = 1 /* LanguageVariant.FluffOS */;
 const stateSaver = new StateSaver();
 
 console.log(
@@ -36,6 +38,7 @@ export function AppContextProvider({ children }: { children: React.ReactNode }) 
       treeMode: stateSaver.get().treeMode,
       scriptTarget: initialScriptTarget,
       scriptKind: initialScriptKind,
+      driverType: initialDriverType,
       bindingEnabled: true,
       showFactoryCode: stateSaver.get().showFactoryCode,
       showInternals: stateSaver.get().showInternals,
@@ -91,6 +94,7 @@ export function AppContextProvider({ children }: { children: React.ReactNode }) 
     state.code,
     state.options.scriptKind,
     state.options.scriptTarget,
+    state.options.driverType,
     state.options.compilerPackageName,
     state.options.bindingEnabled,
   ]);

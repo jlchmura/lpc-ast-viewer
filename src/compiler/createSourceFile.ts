@@ -2,6 +2,7 @@ import {
   CompilerApi,
   CompilerHost,
   CompilerOptions,
+  LanguageVariant,
   Program,
   ScriptKind,
   ScriptTarget,
@@ -10,9 +11,14 @@ import {
 } from "./CompilerApi.js";
 import { installBrowserSystem } from "./createBrowserSystem.js";
 
-export function createSourceFile(api: CompilerApi, code: string, scriptTarget: ScriptTarget, scriptKind: ScriptKind) {
+export function createSourceFile(
+  api: CompilerApi,
+  code: string,
+  scriptTarget: ScriptTarget,
+  scriptKind: ScriptKind,
+  driverType: LanguageVariant,
+) {
   const filePath = `/lpc-ast-viewer${getExtension(api, scriptKind)}`;
-  const driverType = api.LanguageVariant.FluffOS;
   const libFolder = `/${api.getDefaultLibFolder({ driverType })}`;
   // the efun header is auto-included into every file, the way the language server does it
   const globalIncludes = [`${libFolder}${api.getDefaultLibFileName({ driverType })}`];

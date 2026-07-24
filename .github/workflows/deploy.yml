@@ -1,0 +1,100 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # The build compiles against lpc-language-server's main branch, so rebuild daily
+  # to pick up language server changes even when this repo hasn't moved.
+  schedule:
+    - cron: "0 7 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deploys race; let a newer commit supersede an in-flight run.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+env:
+  # Project site path. Use "/" instead if this ever moves to a custom domain.
+  VITE_BASE: /lpc-ast-viewer/
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # package.json depends on the language server as `file:../lpc-language-server`,
+      # so the two repos have to sit next to each other in the workspace.
+      - name: Checkout lpc-ast-viewer
+        uses: actions/checkout@v4
+        with:
+          path: lpc-ast-viewer
+
+      - name: Checkout lpc-language-server (main)
+        uses: actions/checkout@v4
+        with:
+          repository: jlchmura/lpc-language-server
+          ref: main
+          path: lpc-language-server
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      # `npm ci` can't be used here: the lockfile pins a snapshot of the language
+      # server's dependency list, and we deliberately build against whatever main
+      # currently declares.
+      #
+      # --ignore-scripts skips the language server's postinstall, which installs the
+      # vscode extension's client and server trees that this build has no use for.
+      - name: Install
+        working-directory: lpc-ast-viewer
+        run: npm install --ignore-scripts --no-audit --no-fund
+
+      # The compiler sources reach for vscode-languageserver from the language
+      # server's own server/ tree. Nothing in the current bundle graph pulls it in at
+      # runtime, but resolution still has to succeed if that ever changes.
+      - name: Install language server runtime deps
+        run: npm install --prefix lpc-language-server/server --ignore-scripts --no-audit --no-fund
+
+      # Normally run by npm postinstall; skipped above along with everything else.
+      - name: Patch allotment package exports
+        working-directory: lpc-ast-viewer
+        run: deno run --allow-read=. --allow-write=. scripts/patchPackage.ts
+
+      # Regenerates src/resources/libFiles/lpc from the language server's efuns/,
+      # so the deployed viewer always ships main's efun definitions.
+      - name: Generate LPC lib files
+        working-directory: lpc-ast-viewer
+        run: node scripts/copyLpcLibFiles.mjs
+
+      - name: Build
+        working-directory: lpc-ast-viewer
+        run: npx vite build
+
+      # Belt and braces; the Pages artifact path doesn't run Jekyll, but this costs
+      # nothing and keeps the output valid if the deploy ever moves to a branch.
+      - name: Add .nojekyll
+        run: touch lpc-ast-viewer/dist/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: lpc-ast-viewer/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

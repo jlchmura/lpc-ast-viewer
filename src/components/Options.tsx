@@ -3,6 +3,7 @@ import {
   CompilerApi,
   CompilerPackageNames,
   compilerVersionCollection,
+  LanguageVariant,
   ScriptKind,
   ScriptTarget,
 } from "../compiler/index.js";
@@ -33,6 +34,7 @@ export function Options(props: OptionsProps) {
       <div className="menu" hidden={!showOptionsMenu}>
         {getCompilerVersions()}
         {getTreeMode()}
+        {getDriverType()}
         {getScriptKind()}
         {getScriptTarget()}
         {getBindingEnabled()}
@@ -76,6 +78,26 @@ export function Options(props: OptionsProps) {
     return <Option name="Tree mode" value={selection} />;
   }
 
+  function getDriverType() {
+    const { api } = props;
+    if (api == null) {
+      return undefined;
+    }
+    // Deliberately not every LanguageVariant member: only these two have efun
+    // definitions to compile against.
+    const selection = (
+      <select
+        id="driverType"
+        value={props.options.driverType}
+        onChange={(event) => onChange({ driverType: parseInt(event.target.value, 10) as LanguageVariant })}
+      >
+        <option value={api.LanguageVariant.FluffOS}>lpc.LanguageVariant.FluffOS</option>
+        <option value={api.LanguageVariant.LDMud}>lpc.LanguageVariant.LDMud</option>
+      </select>
+    );
+    return <Option name="Driver" value={selection} />;
+  }
+
   function getScriptKind() {
     const { api } = props;
     if (api == null) {
@@ -83,7 +105,7 @@ export function Options(props: OptionsProps) {
     }
     return getEnumOption(
       "Script kind",
-      "ts.ScriptKind",
+      "lpc.ScriptKind",
       api.ScriptKind,
       props.options.scriptKind,
       (value) => onChange({ scriptKind: value as ScriptKind }),
@@ -97,7 +119,7 @@ export function Options(props: OptionsProps) {
     }
     return getEnumOption(
       "Script target",
-      "ts.ScriptTarget",
+      "lpc.ScriptTarget",
       api.ScriptTarget,
       props.options.scriptTarget,
       (value) => onChange({ scriptTarget: value as ScriptTarget }),

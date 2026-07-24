@@ -85,7 +85,7 @@ function fillNewSourceFileState(
   code: string,
   options: OptionsState,
 ) {
-  const { sourceFile, bindingTools } = createSourceFile(api, code, options.scriptTarget, options.scriptKind);
+  const { sourceFile, bindingTools } = createSourceFile(api, code, options.scriptTarget, options.scriptKind, options.driverType);
   state.compiler = {
     packageName: compilerPackageName,
     api,

@@ -59,3 +59,4 @@ export type CompilerHost = lpc.CompilerHost;
 export type CommentRange = lpc.CommentRange;
 export type FlowNode = lpc.FlowNode;
 export type Diagnostic = lpc.Diagnostic;
+export type LanguageVariant = lpc.LanguageVariant;

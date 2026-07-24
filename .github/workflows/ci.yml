@@ -28,10 +28,5 @@ jobs:
           deno task updateCompilerFiles
           deno task test
           deno task predeploy
-      - name: Deploy
-        if: github.ref == 'refs/heads/main'
-        uses: JamesIves/github-pages-deploy-action@v4.5.0
-        with:
-          branch: gh-pages
-          folder: dist
-          single-commit: true
+      # Deployment lives in deploy.yml, which builds against lpc-language-server's
+      # main branch. Two workflows publishing to Pages would fight each other.
