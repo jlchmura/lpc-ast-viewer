@@ -24,23 +24,18 @@ async function loadCompilerApi(packageName: CompilerPackageNames) {
 
   api.tsAstViewer = {
     packageName,
+    libFileTexts: {},
     cachedSourceFiles: {},
   };
-  const libFiles = await libFilesPromise;
 
-  for (const sourceFile of getLibSourceFiles()) {
-    api.tsAstViewer.cachedSourceFiles[sourceFile.fileName] = sourceFile;
+  // The efun headers are kept as raw text and only parsed on demand by the
+  // compiler host. Eagerly parsing all of them would block the main thread for
+  // a long time and most of them are never pulled in by a given snippet.
+  for (const libFile of await libFilesPromise) {
+    api.tsAstViewer.libFileTexts[libFile.fileName] = libFile.text;
   }
 
   compilerTypesLoaded[packageName] = true;
 
   return api;
-
-  function getLibSourceFiles() {
-    return Object.keys(libFiles)
-      .map((key) => (libFiles as any)[key] as { fileName: string; text: string })
-      .map((libFile) =>
-        api.createSourceFile(libFile.fileName, libFile.text, api.ScriptTarget.Latest, false, api.ScriptKind.TS)
-      );
-  }
 }

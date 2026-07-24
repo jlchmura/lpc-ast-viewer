@@ -22,8 +22,13 @@ export interface CompilerApi {
   TransformFlags: object;
   // Internal enum
   TypeMapKind: object;
+  getDefaultLibFolder: typeof ts.getDefaultLibFolder;
+  createLpcFileHandler: typeof ts.createLpcFileHandler;
+  LanguageVariant: typeof ts.LanguageVariant;
   tsAstViewer: {
     packageName: CompilerPackageNames;
+    /** Raw text of the efun headers, keyed by their virtual path. */
+    libFileTexts: { [name: string]: string | undefined };
     cachedSourceFiles: { [name: string]: SourceFile | undefined };
   };
   version: string;

@@ -12,8 +12,8 @@ import { appReducer, deriveEditorTheme } from "./reducers/index.js";
 import { ApiLoadingState, StoreState } from "./types/index.js";
 import { sleep, StateSaver, UrlSaver } from "./utils/index.js";
 
-const initialScriptTarget: ScriptTarget = 99 /* Latest */;
-const initialScriptKind: ScriptKind = 4 /* TSX */;
+const initialScriptTarget: ScriptTarget = 1 /* ScriptTarget.LPC (Latest) */;
+const initialScriptKind: ScriptKind = 1 /* ScriptKind.LPC */;
 const stateSaver = new StateSaver();
 
 console.log(

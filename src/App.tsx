@@ -13,7 +13,7 @@ export function App() {
   return (
     <div id="App" data-theme={state.editorTheme}>
       <header id="AppHeader" className="clearfix">
-        <h2 id="title">TypeScript AST Viewer</h2>
+        <h2 id="title">LPC AST Viewer</h2>
         <components.Options
           api={compiler == null ? undefined : compiler.api}
           options={state.options}

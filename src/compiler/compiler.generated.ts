@@ -25,7 +25,7 @@ export async function importLibFiles(packageName: CompilerPackageNames) {
   // these explicit import statements are required to get webpack to include these modules
   switch (packageName) {
     case "lpc":
-      return await import("../resources/libFiles/typescript/index.js");
+      return (await import("../resources/libFiles/lpc/index.js")).libFiles;
     default:
       return assertNever(
         packageName,
