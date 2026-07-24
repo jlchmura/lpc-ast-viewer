@@ -49,21 +49,29 @@ jobs:
         with:
           deno-version: v2.x
 
-      # `npm ci` can't be used here: the lockfile pins a snapshot of the language
+      # The language server needs its own node_modules. npm hoists a linked
+      # dependency's packages into the *consumer's* tree, but the bundler resolves
+      # bare imports (vscode-uri, jsonc-parser, ...) from the file that contains
+      # them, walking up from lpc-language-server/ - which never reaches the sibling
+      # lpc-ast-viewer/node_modules.
+      #
+      # --ignore-scripts skips the postinstall that installs the vscode extension's
+      # client tree; the server tree is installed explicitly below because the
+      # compiler sources import vscode-languageserver from it.
+      - name: Install lpc-language-server
+        run: npm ci --ignore-scripts --no-audit --no-fund
+        working-directory: lpc-language-server
+
+      - name: Install lpc-language-server/server
+        run: npm ci --ignore-scripts --no-audit --no-fund
+        working-directory: lpc-language-server/server
+
+      # `npm ci` can't be used here: this lockfile pins a snapshot of the language
       # server's dependency list, and we deliberately build against whatever main
       # currently declares.
-      #
-      # --ignore-scripts skips the language server's postinstall, which installs the
-      # vscode extension's client and server trees that this build has no use for.
-      - name: Install
+      - name: Install lpc-ast-viewer
         working-directory: lpc-ast-viewer
         run: npm install --ignore-scripts --no-audit --no-fund
-
-      # The compiler sources reach for vscode-languageserver from the language
-      # server's own server/ tree. Nothing in the current bundle graph pulls it in at
-      # runtime, but resolution still has to succeed if that ever changes.
-      - name: Install language server runtime deps
-        run: npm install --prefix lpc-language-server/server --ignore-scripts --no-audit --no-fund
 
       # Normally run by npm postinstall; skipped above along with everything else.
       - name: Patch allotment package exports
