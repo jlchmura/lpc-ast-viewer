@@ -1,30 +1,34 @@
-import * as ts from "lpc/server/src/lpc/lpc.js";
+import * as lpc from "lpc/server/src/lpc/lpc.js";
 import { CompilerPackageNames } from "./compilerVersions.generated.js";
 
 export interface CompilerApi {
-  createSourceFile: typeof ts.createSourceFile;
-  createProgram: typeof ts.createProgram;
-  getDefaultLibFileName: typeof ts.getDefaultLibFileName;
-  forEachChild: typeof ts.forEachChild;
-  ScriptTarget: typeof ts.ScriptTarget;
-  ScriptKind: typeof ts.ScriptKind;
-  SyntaxKind: typeof ts.SyntaxKind;
-  ModifierFlags: typeof ts.ModifierFlags;
-  ModuleKind: typeof ts.ModuleKind;
-  NodeFlags: typeof ts.NodeFlags;
-  ObjectFlags: typeof ts.ObjectFlags;
-  SymbolFlags: typeof ts.SymbolFlags;
-  TypeFlags: typeof ts.TypeFlags;
-  FlowFlags: typeof ts.FlowFlags;
+  createSourceFile: typeof lpc.createSourceFile;
+  createProgram: typeof lpc.createProgram;
+  getDefaultLibFileName: typeof lpc.getDefaultLibFileName;
+  forEachChild: typeof lpc.forEachChild;
+  ScriptTarget: typeof lpc.ScriptTarget;
+  ScriptKind: typeof lpc.ScriptKind;
+  SyntaxKind: typeof lpc.SyntaxKind;
+  ModifierFlags: typeof lpc.ModifierFlags;
+  ModuleKind: typeof lpc.ModuleKind;
+  NodeFlags: typeof lpc.NodeFlags;
+  ObjectFlags: typeof lpc.ObjectFlags;
+  SymbolFlags: typeof lpc.SymbolFlags;
+  TypeFlags: typeof lpc.TypeFlags;
+  FlowFlags: typeof lpc.FlowFlags;
   // Internal enum
   CheckFlags: object;
   // Internal enum
   TransformFlags: object;
   // Internal enum
   TypeMapKind: object;
-  getDefaultLibFolder: typeof ts.getDefaultLibFolder;
-  createLpcFileHandler: typeof ts.createLpcFileHandler;
-  LanguageVariant: typeof ts.LanguageVariant;
+  getDefaultLibFolder: typeof lpc.getDefaultLibFolder;
+  createLpcFileHandler: typeof lpc.createLpcFileHandler;
+  flattenDiagnosticMessageText: typeof lpc.flattenDiagnosticMessageText;
+  textToKeywordObj: typeof lpc.textToKeywordObj;
+  textToDirectiveObj: typeof lpc.textToDirectiveObj;
+  LanguageVariant: typeof lpc.LanguageVariant;
+  DiagnosticCategory: typeof lpc.DiagnosticCategory;
   tsAstViewer: {
     packageName: CompilerPackageNames;
     /** Raw text of the efun headers, keyed by their virtual path. */
@@ -32,25 +36,26 @@ export interface CompilerApi {
     cachedSourceFiles: { [name: string]: SourceFile | undefined };
   };
   version: string;
-  getLeadingCommentRanges: typeof ts.getLeadingCommentRanges;
-  getTrailingCommentRanges: typeof ts.getTrailingCommentRanges;
+  getLeadingCommentRanges: typeof lpc.getLeadingCommentRanges;
+  getTrailingCommentRanges: typeof lpc.getTrailingCommentRanges;
 }
 
-export type Node = ts.Node;
-export type Type = ts.Type;
-export type Signature = ts.Signature;
-export type SourceFile = ts.SourceFile;
-export type Symbol = ts.Symbol;
-export type Program = ts.Program;
-export type TypeChecker = ts.TypeChecker;
-export type CompilerOptions = ts.CompilerOptions;
-export type ScriptTarget = ts.ScriptTarget;
-export type ScriptKind = ts.ScriptKind;
-export type NodeFlags = ts.NodeFlags;
-export type ObjectFlags = ts.ObjectFlags;
-export type SymbolFlags = ts.SymbolFlags;
-export type TypeFlags = ts.TypeFlags;
-export type SyntaxKind = ts.SyntaxKind;
-export type CompilerHost = ts.CompilerHost;
-export type CommentRange = ts.CommentRange;
-export type FlowNode = ts.FlowNode;
+export type Node = lpc.Node;
+export type Type = lpc.Type;
+export type Signature = lpc.Signature;
+export type SourceFile = lpc.SourceFile;
+export type Symbol = lpc.Symbol;
+export type Program = lpc.Program;
+export type TypeChecker = lpc.TypeChecker;
+export type CompilerOptions = lpc.CompilerOptions;
+export type ScriptTarget = lpc.ScriptTarget;
+export type ScriptKind = lpc.ScriptKind;
+export type NodeFlags = lpc.NodeFlags;
+export type ObjectFlags = lpc.ObjectFlags;
+export type SymbolFlags = lpc.SymbolFlags;
+export type TypeFlags = lpc.TypeFlags;
+export type SyntaxKind = lpc.SyntaxKind;
+export type CompilerHost = lpc.CompilerHost;
+export type CommentRange = lpc.CommentRange;
+export type FlowNode = lpc.FlowNode;
+export type Diagnostic = lpc.Diagnostic;

@@ -2,7 +2,7 @@ import { Allotment } from "allotment";
 import "./App.css";
 import "allotment/dist/style.css";
 import { useAppContext } from "./AppContext.js";
-import { getDescendantAtRange, getStartSafe } from "./compiler/index.js";
+import { getDescendantAtRange, getDiagnostics, getStartSafe } from "./compiler/index.js";
 import * as components from "./components/index.js";
 import { ApiLoadingState } from "./types/index.js";
 
@@ -92,6 +92,8 @@ export function App() {
           }}
           theme={state.editorTheme}
           text={state.code}
+          api={compiler?.api}
+          diagnostics={compiler == null ? undefined : getDiagnostics(compiler, state.options.bindingEnabled)}
           highlight={getCodeHighlightRange()}
           showInfo={true}
           renderWhiteSpace={true}

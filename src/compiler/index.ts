@@ -4,6 +4,7 @@ export * from "./compilerVersions.generated.js";
 export * from "./convertOptions.js";
 export * from "./createSourceFile.js";
 export * from "./getChildrenFunction.js";
+export * from "./getDiagnostics.js";
 export * from "./getCompilerApi.js";
 export * from "./getDescendantAtRange.js";
 export * from "./getFactoryCodeGenerator.js";

@@ -2,7 +2,9 @@ import type * as monacoEditorForTypes from "monaco-editor";
 import React from "react";
 import * as ReactMonacoEditorForTypes from "react-monaco-editor";
 import type { EditorDidMount } from "react-monaco-editor";
+import type { CompilerApi, EditorDiagnostic } from "../compiler/index.js";
 import { LineAndColumnComputer } from "../utils/index.js";
+import { lpcLanguageId, registerLpcLanguage } from "./registerLpcLanguage.js";
 import { Spinner } from "./Spinner.js";
 
 // Conversion of OS to light or dark is handled at the AppContext level.
@@ -19,6 +21,9 @@ export interface CodeEditorProps {
   readOnly?: boolean;
   renderWhiteSpace?: boolean;
   editorDidMount?: EditorDidMount;
+  /** Registers the LPC language for highlighting. Omit for read-only output editors. */
+  api?: CompilerApi;
+  diagnostics?: EditorDiagnostic[];
 }
 
 export interface CodeEditorState {
@@ -45,6 +50,9 @@ export class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState
 
     const reactMonacoEditorPromise = import("react-monaco-editor");
     import("monaco-editor").then((monacoEditor) => {
+      if (this.props.api != null) {
+        registerLpcLanguage(monacoEditor, this.props.api);
+      }
       // monacoEditor.languages.typescript.typescriptDefaults.setCompilerOptions({
       //   target: monacoEditor.languages.typescript.ScriptTarget.ESNext,
       //   allowNonTsExtensions: true,        
@@ -65,6 +73,7 @@ export class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState
 
   override render() {
     this.updateHighlight();
+    this.updateMarkers();
 
     return (
       <div id={this.props.id} ref={this.outerContainerRef} className={getClassNames(this.props.showInfo)}>
@@ -97,6 +106,37 @@ export class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState
         Pos {this.state.position}, Ln {this.state.lineNumber}, Col {this.state.column}
       </div>
     );
+  }
+
+  private monaco: Parameters<EditorDidMount>[1] | undefined;
+  private updateMarkers() {
+    const editor = this.editor;
+    const monaco = this.monaco;
+    if (editor == null || monaco == null || this.props.diagnostics == null) {
+      return;
+    }
+    const model = editor.getModel();
+    if (model == null) {
+      return;
+    }
+
+    if (this.lineAndColumnComputer.text !== this.props.text) {
+      this.lineAndColumnComputer = new LineAndColumnComputer(this.props.text);
+    }
+    const lineAndColumnComputer = this.lineAndColumnComputer;
+
+    monaco.editor.setModelMarkers(model, "lpc", this.props.diagnostics.map((d) => {
+      const start = lineAndColumnComputer.getNumberAndColumnFromPos(d.start);
+      const end = lineAndColumnComputer.getNumberAndColumnFromPos(d.start + d.length);
+      return {
+        severity: getSeverity(monaco, d.category),
+        message: d.message,
+        startLineNumber: start.lineNumber,
+        startColumn: start.column,
+        endLineNumber: end.lineNumber,
+        endColumn: end.column,
+      };
+    }));
   }
 
   private deltaDecorations: string[] = [];
@@ -161,7 +201,7 @@ export class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState
         height="100%"
         value={this.props.text}
         theme={this.props.theme == "dark" ? "vs-dark" : "vs"}
-        language="lpc"
+        language={lpcLanguageId}
         onChange={(text) => this.props.onChange && this.props.onChange(text)}
         editorDidMount={this.editorDidMount}
         options={{
@@ -181,6 +221,7 @@ export class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState
 
   private editorDidMount(editor: Parameters<EditorDidMount>[0], monaco: Parameters<EditorDidMount>[1]) {
     this.editor = editor;
+    this.monaco = monaco;
 
     // use lf newlines
     editor.getModel()?.setEOL(monaco.editor.EndOfLineSequence.LF);
@@ -235,9 +276,23 @@ export class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState
     this.disposables.push({ dispose: () => clearInterval(intervalId) });
 
     this.updateHighlight();
+    this.updateMarkers();
 
     if (this.props.editorDidMount) {
       this.props.editorDidMount(editor, monaco);
     }
+  }
+}
+
+function getSeverity(monaco: Parameters<EditorDidMount>[1], category: EditorDiagnostic["category"]) {
+  switch (category) {
+    case "error":
+      return monaco.MarkerSeverity.Error;
+    case "warning":
+      return monaco.MarkerSeverity.Warning;
+    case "suggestion":
+      return monaco.MarkerSeverity.Info;
+    default:
+      return monaco.MarkerSeverity.Hint;
   }
 }
