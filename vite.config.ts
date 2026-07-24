@@ -1,5 +1,6 @@
 import react from "@vitejs/plugin-react";
 import * as path from "node:path";
+import process from "node:process";
 import { defineConfig } from "vite";
 import * as monacoEditorPlugin from "vite-plugin-monaco-editor";
 
