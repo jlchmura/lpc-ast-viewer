@@ -11,7 +11,7 @@
   "dependencies": {
     "@viz-js/viz": "^3.3.1",
     "allotment": "^1.20.0",
-    "circular-json": "^0.5.9",
+    "circular-json": "^0.5.9",    
     "lz-string": "^1.4.4",
     "monaco-editor": "^0.44.0",
     "react": "^18.2.0",
@@ -34,6 +34,7 @@
     "ts-factory-code-generator-generator": "^0.7.0",
     "typescript": "5.0.2",
     "vite": "^5.2.9",
-    "vite-plugin-monaco-editor": "^1.1.0"
+    "vite-plugin-monaco-editor": "^1.1.0",
+    "lpc": "file:../lpc-language-server"
   }
 }

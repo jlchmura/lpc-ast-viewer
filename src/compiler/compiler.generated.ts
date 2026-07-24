@@ -11,8 +11,8 @@ import { assertNever } from "../utils/index.js";
 export async function importCompilerApi(packageName: CompilerPackageNames) {
   // these explicit import statements are required to get webpack to include these modules
   switch (packageName) {
-    case "typescript":
-      return await import("typescript");
+    case "lpc":
+      return await import("lpc/server/src/lpc/lpc.js");
     default:
       return assertNever(
         packageName,
@@ -24,7 +24,7 @@ export async function importCompilerApi(packageName: CompilerPackageNames) {
 export async function importLibFiles(packageName: CompilerPackageNames) {
   // these explicit import statements are required to get webpack to include these modules
   switch (packageName) {
-    case "typescript":
+    case "lpc":
       return await import("../resources/libFiles/typescript/index.js");
     default:
       return assertNever(
@@ -41,7 +41,7 @@ export async function getGenerateFactoryCodeFunction(
 ): Promise<FactoryCodeGenerator> {
   // these explicit import statements are required to get webpack to include these modules
   switch (packageName) {
-    case "typescript":
+    case "lpc":
       return (await import("../resources/factoryCode/typescript.generated.js"))
         .generateFactoryCode as any;
     default:
@@ -64,7 +64,7 @@ export async function getPublicApiInfo(
 ): Promise<PublicApiInfo> {
   // these explicit import statements are required to get webpack to include these modules
   switch (packageName) {
-    case "typescript":
+    case "lpc":
       return (await import(
         "../resources/publicApiInfo/typescript.generated.js"
       ));

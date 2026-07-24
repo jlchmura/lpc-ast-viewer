@@ -45,11 +45,11 @@ export class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState
 
     const reactMonacoEditorPromise = import("react-monaco-editor");
     import("monaco-editor").then((monacoEditor) => {
-      monacoEditor.languages.typescript.typescriptDefaults.setCompilerOptions({
-        target: monacoEditor.languages.typescript.ScriptTarget.ESNext,
-        allowNonTsExtensions: true,
-      });
-
+      // monacoEditor.languages.typescript.typescriptDefaults.setCompilerOptions({
+      //   target: monacoEditor.languages.typescript.ScriptTarget.ESNext,
+      //   allowNonTsExtensions: true,        
+      // });
+      
       reactMonacoEditorPromise.then((editor) => {
         // types are wrong for this package
         this.setState({ editorComponent: (editor.default as any) });
@@ -161,7 +161,7 @@ export class CodeEditor extends React.Component<CodeEditorProps, CodeEditorState
         height="100%"
         value={this.props.text}
         theme={this.props.theme == "dark" ? "vs-dark" : "vs"}
-        language="typescript"
+        language="lpc"
         onChange={(text) => this.props.onChange && this.props.onChange(text)}
         editorDidMount={this.editorDidMount}
         options={{

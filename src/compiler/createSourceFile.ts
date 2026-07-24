@@ -27,10 +27,10 @@ export function createSourceFile(api: CompilerApi, code: string, scriptTarget: S
 
   function getBindingResult() {
     const options: CompilerOptions = {
-      strict: true,
+      // strict: true,
       target: scriptTarget,
-      allowJs: true,
-      module: api.ModuleKind.ES2015,
+      // allowJs: true,
+      module: api.ModuleKind.LPC,
     };
     const files: { [name: string]: SourceFile | undefined } = {
       [filePath]: sourceFile,
@@ -65,14 +65,16 @@ export function createSourceFile(api: CompilerApi, code: string, scriptTarget: S
 
 function getExtension(api: CompilerApi, scriptKind: ScriptKind) {
   switch (scriptKind) {
-    case api.ScriptKind.TS:
-      return ".ts";
-    case api.ScriptKind.TSX:
-      return ".tsx";
-    case api.ScriptKind.JS:
-      return ".js";
-    case api.ScriptKind.JSX:
-      return ".jsx";
+    // case api.ScriptKind.TS:
+    //   return ".ts";
+    // case api.ScriptKind.TSX:
+    //   return ".tsx";
+    // case api.ScriptKind.JS:
+    //   return ".js";
+    // case api.ScriptKind.JSX:
+    //   return ".jsx";
+    case api.ScriptKind.LPC:
+      return ".c";
     case api.ScriptKind.JSON:
       return ".json";
     case api.ScriptKind.External:
@@ -80,6 +82,7 @@ function getExtension(api: CompilerApi, scriptKind: ScriptKind) {
     case api.ScriptKind.Unknown:
       return "";
     default:
-      return assertNever(scriptKind, `Not implemented ScriptKind: ${api.ScriptKind[scriptKind]}`);
+      return "";
+      // return assertNever(scriptKind, `Not implemented ScriptKind: ${api.ScriptKind[scriptKind]}`);
   }
 }

@@ -1,4 +1,4 @@
-import * as ts from "typescript";
+import * as ts from "lpc/server/src/lpc/lpc.js";
 import { CompilerPackageNames } from "./compilerVersions.generated.js";
 
 export interface CompilerApi {

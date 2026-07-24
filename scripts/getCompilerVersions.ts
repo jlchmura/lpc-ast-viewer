@@ -25,8 +25,8 @@ export function getCompilerVersions() {
   if (versions.length === 0) {
     const devDependencies = fileData["devDependencies"];
     versions.push({
-      name: `typescript`,
-      version: devDependencies["typescript"],
+      name: `lpc`,
+      version: devDependencies["lpc"],
     });
   }
 
