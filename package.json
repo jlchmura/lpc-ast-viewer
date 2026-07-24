@@ -1,9 +1,11 @@
 {
-  "name": "ts-ast-viewer",
+  "name": "lpc-ast-viewer",
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "author": "David Sherret",
+  "author": {
+        "name": "jlchmura"
+  },
   "license": "MIT",
   "scripts": {
     "postinstall": "deno run --allow-read=. --allow-write=. scripts/patchPackage.ts"
