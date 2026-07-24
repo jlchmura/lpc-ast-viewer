@@ -1,6 +1,6 @@
 # About
 
-TypeScript AST Viewer provides a way to view the TypeScript AST, symbols, types, and signatures.
+LPC AST Viewer provides a way to view the LPC AST, symbols, types, and signatures.
 
 ## Interacting with Compiler Objects
 
