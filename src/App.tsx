@@ -118,6 +118,7 @@ export function App() {
               sourceFile={compiler.sourceFile}
               onSelectNode={(node) => dispatch({ type: "SET_SELECTED_NODE", node })}
               mode={state.options.treeMode}
+              showEfunDefinitions={state.options.showEfunDefinitions}
             />
           </components.ErrorBoundary>
         </Allotment.Pane>

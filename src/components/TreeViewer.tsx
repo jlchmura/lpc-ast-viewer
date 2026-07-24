@@ -10,10 +10,11 @@ export interface TreeViewerProps {
   selectedNode: Node;
   onSelectNode: (node: Node) => void;
   mode: TreeMode;
+  showEfunDefinitions: boolean;
 }
 
 export function TreeViewer(props: TreeViewerProps) {
-  const { sourceFile, selectedNode, onSelectNode, mode, api } = props;
+  const { sourceFile, selectedNode, onSelectNode, mode, api, showEfunDefinitions } = props;
   let i = 0;
   // todo: refactor to use refs
   useLayoutEffect(() => {
@@ -27,7 +28,7 @@ export function TreeViewer(props: TreeViewerProps) {
       }
     }
   }, [selectedNode]);
-  return <div id="treeViewer">{renderNode(sourceFile, getChildrenFunction(mode, sourceFile))}</div>;
+  return <div id="treeViewer">{renderNode(sourceFile, getChildrenFunction(mode, sourceFile, { api, showEfunDefinitions }))}</div>;
 
   function renderNode(node: Node, getChildren: (node: Node) => Node[]): JSX.Element {
     const children = getChildren(node);

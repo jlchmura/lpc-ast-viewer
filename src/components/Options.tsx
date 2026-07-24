@@ -38,6 +38,7 @@ export function Options(props: OptionsProps) {
         {getBindingEnabled()}
         {getShowFactoryCode()}
         {getShowInternals()}
+        {getShowEfunDefinitions()}
         {getTheme()}
         <div className="bottomLinks">
           <ExternalLink text="About" url="https://github.com/dsherret/ts-ast-viewer/tree/main/docs/about.md" />
@@ -158,6 +159,20 @@ export function Options(props: OptionsProps) {
       </div>
     );
     return <Option name={"Show internals"} value={selection} />;
+  }
+
+  function getShowEfunDefinitions() {
+    const selection = (
+      <div>
+        <input
+          id="showEfunDefinitions"
+          type="checkbox"
+          checked={props.options.showEfunDefinitions}
+          onChange={(event) => onChange({ showEfunDefinitions: !!event.target.checked })}
+        />
+      </div>
+    );
+    return <Option name={"Show efun definitions"} value={selection} />;
   }
 
   function getEnumOption(

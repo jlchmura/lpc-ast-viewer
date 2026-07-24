@@ -1,13 +1,14 @@
 import { Theme, TreeMode } from "../types/index.js";
 
 export interface VersionedState {
-  version: 1 | 2 | 3 | 4;
+  version: 1 | 2 | 3 | 4 | 5;
 }
 
 export interface SavedState extends VersionedState {
   treeMode: TreeMode;
   showFactoryCode: boolean;
   showInternals: boolean;
+  showEfunDefinitions: boolean;
   theme: Theme;
 }
 
@@ -25,10 +26,11 @@ export class StateSaver {
 
   private get defaultState(): SavedState {
     return {
-      version: 4 as const,
+      version: 5 as const,
       treeMode: TreeMode.forEachChild,
       showFactoryCode: true,
       showInternals: false,
+      showEfunDefinitions: false,
       theme: Theme.OS,
     };
   }
@@ -86,6 +88,9 @@ export class StateSaver {
     if (typeof data.showInternals !== "boolean") {
       return false;
     }
+    if (typeof data.showEfunDefinitions !== "boolean") {
+      return false;
+    }
     if (![Theme.OS, Theme.Dark, Theme.Light].includes(data.theme)) {
       return false;
     }
@@ -99,6 +104,7 @@ function transform(data: SavedState) {
   transformToVersion2(data);
   transformToVersion3(data);
   transformToVersion4(data);
+  transformToVersion5(data);
   return data;
 }
 
@@ -124,4 +130,12 @@ function transformToVersion4(data: VersionedState) {
   }
   (data as any).theme = Theme.OS;
   data.version = 4;
+}
+
+function transformToVersion5(data: VersionedState) {
+  if (data.version !== 4) {
+    return;
+  }
+  (data as any).showEfunDefinitions = false;
+  data.version = 5;
 }

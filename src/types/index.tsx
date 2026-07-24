@@ -38,6 +38,7 @@ export interface OptionsState {
   bindingEnabled: boolean;
   showFactoryCode: boolean;
   showInternals: boolean;
+  showEfunDefinitions: boolean;
   theme: Theme;
 }
 
